@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
+@font-face {
+	font-family: 'Gugeshashvili';
+	src: local('Gugeshashvili'), url(../fonts/gugeshashvili_5_mthavruli.ttf);
+}
+
+@font-face {
+	font-family: 'Montserrat bold';
+	src: local('Montserrat'), url(../fonts/Montserrat.ttf);
+}
+
+@font-face {
+	font-family: 'Montserrat semibold';
+	src: local('Montserrat semibold'), url(../fonts/Montserrat_semibold.ttf);
+}

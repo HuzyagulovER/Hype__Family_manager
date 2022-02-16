@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/family.css">
+	<link rel="stylesheet" href="css/font.css">
+	<link rel="stylesheet" href="css/font-awesome.css">
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+	<title>FamilyManager - Golem</title>
+</head>
+
+<body>
+	<div id="app">
+		<div class="container" v-if="active">
+			<img src="images/close.png" @click="closeMenu()" class="close-button"></img>
+			<div class="inner-container">
+
+
+				<div class="main" v-if="page == 0">
+					<header>
+						<img class="users-icon" src="images/users-icon.png" alt="">
+						<div class="header__title">
+							<p>ოჯახის დასახელება:</p>
+							<h1>{{header}}</h1>
+						</div>
+
+					</header>
+					<div class="page__title">
+						<h2>ოჯახის შექმნა</h2>
+						<h3>შექმენით საკუთარი ოჯახი</h3>
+					</div>
+					<div class="upblock">
+						<div class="avatar">
+							<img :src="familyimg" @error="familyimg = `images/hype.png`" :alt="header">
+						</div>
+						<div class="info-container">
+							<div class="info">
+								<p>
+									<span class="icon-holder"><img src="images/up-arrow.png" alt=""></span>თქვენი
+									რანგი:
+									<span>{{familyrank}}</span>
+								</p>
+								<p>
+									<span class="icon-holder"><img src="images/rang.png" alt=""></span>თქვენი
+									წოდება:
+									<span>{{familyrankname}}</span>
+								</p>
+								<p>
+									<span class="icon-holder"><img src="images/families-icon.png" alt=""></span>ოჯახის წევრები:
+									<span>{{membercount}}/{{membermax}}</span>
+								</p>
+								<p>
+									<span class="icon-holder"><img src="images/online.png" alt=""></span>ონლაინში:
+									<span>{{membersonline}}</span>
+								</p>
+							</div>
+							<div class="description">
+								<p>
+									{{desc_1 == null || desc_1 == "" ? "შეიყვანეთ ინფორმაცია პირველ ბლოკში" : desc_1}}
+								</p>
+								<p>
+									{{desc_2 == null || desc_2 == "" ? "შეიყვანეთ ინფორმაცია მეორე ბლოკში" : desc_2}}
+								</p>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="main pageMembers" v-if="page == 1">
+					<header>
+						<img class="users-icon" src="images/users-icon.png" alt="">
+						<div class="header__title">
+							<p>ოჯახის დასახელება:</p>
+							<h1>{{header}}</h1>
+						</div>
+					</header>
+					<div class="page__title">
+						<h2>ოჯახის შექმნა</h2>
+						<h3>შექმენით საკუთარი ოჯახი</h3>
+					</div>
+					<div class="items">
+						<div class="item" v-for="(member, index) in members">
+							<div class="status">
+								<div class="online" v-if="member[0]"></div>
+								<div class="offline" v-else></div>
+							</div>
+							<p>
+								[{{member[1]}}] {{member[2]}} | {{member[3]}} - <span>{{member[4]}}</span>
+							</p>
+							<span class="icon-container">
+								<div>
+									<img src="images/up-arrow.png" @click="changerank(member)" class="rang-up"></img>
+								</div>
+								<div>
+									<img src="images/delete-member.png" @click="deleteMember(member)"
+										class="delete-member"></img>
+								</div>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="main pageInvite" v-if="page == 2">
+					<div class="page__title">
+						<h2>ინფორმაცია</h2>
+						<h3>ინფორმაცია თქვენს ოჯახზე</h3>
+					</div>
+					<div class="items">
+						<div class="item">
+							<div class="item__grid-container">
+								<div class="input-holder">
+									<input v-model="invitePlayerID" type="text" placeholder="PLAYER ID">
+									<div class="family-to-invite">
+										<img class="users-icon" src="images/users-icon.png" alt="">
+										<div class="header__title">
+											<p>ოჯახის დასახელება:</p>
+											<h1>{{header}}</h1>
+										</div>
+									</div>
+								</div>
+								<p>
+									ოჯახში მოთამაშის მოწვევა ხდება ID ის საშუალებით. ჩაწერეთ მოთამაშის აიდი და მოიწივეთ ოჯახში.
+									სასურველია რომ მოთამაშე რომელსაც იწვევთ <br />იმყოფებოდეს 3 მეტრის სიახლოვეს თქვენთან
+								</p>
+								<img class="girl" src="images/girl.png" alt="">
+							</div>
+
+						</div>
+					</div>
+					<a class="btnBuy" @click="invitePlayer(invitePlayerID)">ოჯახში მოწვევა</a>
+				</div>
+
+				<div class="main pageSettings" v-if="page == 3">
+					<header>
+						<img class="users-icon" src="images/users-icon.png" alt="">
+						<div class="header__title">
+							<p>ოჯახის დასახელება:</p>
+							<h1>{{header}}</h1>
+						</div>
+					</header>
+					<div class="page__title">
+						<h2>ოჯახის შექმნა</h2>
+						<h3>შექმენით საკუთარი ოჯახი</h3>
+					</div>
+					<div class="items">
+						<div class="item">
+							<a @click="rankSettings()" class="btnSettings">რანკების პარამეტრები</a>
+							<a @click="disbandFamily()" class="btnSettings btnDelete">ოჯახის დაშლა</a>
+						</div>
+						<div class="item">
+							<div class="item__grid-container">
+								<div class="desc">
+									<textarea v-model="newdesc_1" name="desc_1" placeholder="Enter Text Here"
+										maxlength="240"></textarea>
+								</div>
+								<p>
+									გამოიყენეთ ეს პუნქტი თქვენი ოჯახის აღწერიასთვის. ადგილი განკუთვნილია ოჯახის ზედაპირული
+									აღწერისათვის
+								</p>
+							</div>
+
+						</div>
+						<div class="item">
+							<div class="item__grid-container">
+								<div class="desc">
+									<textarea v-model="newdesc_2" name="desc_1" placeholder="Enter Text Here"
+										maxlength="240"></textarea>
+								</div>
+								<p>
+									გამოიყენეთ ეს პუნქტი თქვენი ოჯახის აღწერიასთვის. ადგილი განკუთვნილია ოჯახის სრული
+									აღწერისათვის. <br />დაარსების ისტორია, სიტუაციები და ასე შემდეგ.
+								</p>
+							</div>
+
+						</div>
+					</div>
+					<a @click="saveSettings()" class="btnBuy">დამახსოვრება</a>
+				</div>
+
+				<footer>
+					<div>
+						<a :class="{btnActive: page == 0}" class="button" @click="changePage(0)">მთავარი</a>
+					</div>
+					<div>
+						<a :class="{btnActive: page == 1}" class="button" @click="changePage(1)">მონაწილეები</a>
+					</div>
+					<div>
+						<a :class="{btnActive: page == 2}" class="button" @click="changePage(2)">მოწვევა</a>
+					</div>
+					<div>
+						<a :class="{btnActive: page == 3}" class="button" @click="changePage(3)">პარამეტრები</a>
+					</div>
+				</footer>
+			</div>
+		</div>
+
+		<transition name="modal">
+			<div class="modal-window all-rangs-change" v-if="activeChangeRank">
+				<header>
+					<img class="users-icon" src="images/users-icon.png" alt="">
+					<div class="header__title">
+						<p>ოჯახის დასახელება:</p>
+						<h1>{{header}}</h1>
+					</div>
+				</header>
+				<div class="items">
+					<div class="item" v-for="(rank, index) in allranks">
+						<p>
+							{{rank.Rank}}
+						</p>
+						<input v-model="allranks[index].RankName" type="text" :value="rank.RankName">
+					</div>
+				</div>
+				<footer>
+					<a class="btnModal btnGps" @click="saveSettings()">დადასტურება</a>
+					<a class="btnModal btnCancel" @click="cancelmodal()">გაუქმება</a>
+				</footer>
+			</div>
+		</transition>
+
+		<transition name="modal">
+			<div class="modal-window delete-family" v-if="activeDisbandModal">
+				<div class="page__title">
+					<h2>ოჯახის წაშლა</h2>
+					<h3>ნამდვილად გსურთ წაშლა?</h3>
+				</div>
+				<div class="items">
+					<div class="item">
+						<div class="item__grid-container">
+							<div class="input-holder">
+								<input v-model="reasonKick" type="text" placeholder="შეიყვანეთ მიზეზი">
+								<div class="family-to-delete">
+									<img class="users-icon" src="images/users-icon.png" alt="">
+									<div class="header__title">
+										<p>ოჯახის დასახელება:</p>
+										<h1>{{header}}</h1>
+									</div>
+								</div>
+							</div>
+							<p>
+								გთხოვთ დაწეროთ მიზეზი თუ რატომ შლით ოჯახს. გაითვალისწინეთ რომ ოჯახის წაშლისსას ნულდება მთლიანი
+								სტატისტიკა და ოჯახის პროგრესიც.
+							</p>
+							<img class="girl" src="images/girl.png" alt="">
+						</div>
+					</div>
+				</div>
+				<footer>
+					<a class="btnModal btnGps" @click="btnAccept()">დადასტურება</a>
+					<a class="btnModal btnCancel" @click="cancelmodal()">გაუქმება</a>
+				</footer>
+			</div>
+		</transition>
+
+		<transition name="modal">
+			<div class="modal-window rang-and-member" v-if="activeModal">
+				<div class="items">
+					<div class="page__title">
+						<h2>{{member[2]}} [{{member[1]}}]</h2>
+					</div>
+					<div class="item">
+						<div class="item__container">
+							<p>
+								თქვენი რანგია: <span>{{member[3]}}</span>
+							</p>
+							<p>
+								თქვენი წოდება: <span>{{member[4]}}</span>
+							</p>
+							<input v-model="changeRank" type="number" placeholder="შეიყვანეთ რანგი" v-if="modalRank">
+							<input v-model="reasonKick" type="text" placeholder="შეიყვანეთ მიზეზი" v-else>
+						</div>
+						<img class="girl" src="images/girl.png" alt="">
+					</div>
+				</div>
+				<footer>
+					<a class="btnModal btnGps" @click="btnAccept()">დადასტურება</a>
+					<a class="btnModal btnCancel" @click="cancelmodal()">გაუქმება</a>
+				</footer>
+			</div>
+		</transition>
+
+		<transition name="fade">
+			<div class="fade" v-if="activeModal || activeChangeRank || activeDisbandModal"></div>
+		</transition>
+
+	</div>
+	<script src="js/family.js"></script>
+</body>
+
+</html>
